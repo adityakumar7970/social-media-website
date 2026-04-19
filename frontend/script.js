@@ -1,7 +1,11 @@
 ﻿// script.js
-const BACKEND_HOST ='https://social-media-website-i6f8.onrender.com';
+const BACKEND_HOST = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
+  ? 'http://localhost:5000'
+  : 'https://social-media-website-i6f8.onrender.com';
 const AUTH_API_BASE = `${BACKEND_HOST}/api/auth`;
 const SOCIAL_API_BASE = `${BACKEND_HOST}/api/social`;
+const TOKEN_KEY = 'token';
+const LEGACY_TOKEN_KEY = 'SocialixToken';
 const loginForm = document.getElementById('loginForm');
 const signupForm = document.getElementById('signupForm');
 const showLoginButton = document.getElementById('showLoginButton');
@@ -10,15 +14,27 @@ const switchToSignup = document.getElementById('switchToSignup');
 const switchToLogin = document.getElementById('switchToLogin');
 
 function getToken() {
-  return localStorage.getItem('SocialixToken');
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (token) {
+    return token;
+  }
+  const legacyToken = localStorage.getItem(LEGACY_TOKEN_KEY);
+  if (legacyToken) {
+    localStorage.setItem(TOKEN_KEY, legacyToken);
+    localStorage.removeItem(LEGACY_TOKEN_KEY);
+    return legacyToken;
+  }
+  return null;
 }
 
 function setToken(token) {
-  localStorage.setItem('SocialixToken', token);
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.removeItem(LEGACY_TOKEN_KEY);
 }
 
 function removeToken() {
-  localStorage.removeItem('SocialixToken');
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(LEGACY_TOKEN_KEY);
 }
 
 function clearUserStorage() {
@@ -45,6 +61,7 @@ function getAuthHeaders() {
 }
 
 async function apiFetch(path, options = {}) {
+  const requestUrl = path.startsWith('/api/') ? `${BACKEND_HOST}${path}` : path;
   const fetchOptions = {
     headers: {
       'Content-Type': 'application/json',
@@ -54,7 +71,7 @@ async function apiFetch(path, options = {}) {
     ...options,
   };
 
-  const response = await fetch(path, fetchOptions);
+  const response = await fetch(requestUrl, fetchOptions);
   const body = await response.text();
   let data;
   try {
@@ -135,7 +152,9 @@ if (loginForm) {
       }
 
       resetUserSession();
+      console.log('Login successful, token:', result.token);
       setToken(result.token);
+      console.log('Stored token:', getToken());
       sessionStorage.setItem('username', result.user.username);
       sessionStorage.setItem('fullName', `${result.user.firstName} ${result.user.lastName}`);
       localStorage.setItem('activeNavItem', 'home');

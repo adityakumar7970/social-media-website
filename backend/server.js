@@ -14,7 +14,7 @@ const socialRoutes = require('./routes/socialRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/socialix';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://singhaditya73128_db_user:fNJKFQCA5TFnq2qF@clusterone.60cqypu.mongodb.net/socialApp';
 
 const corsOptions = {
   origin: true,
