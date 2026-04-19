@@ -39,10 +39,14 @@ router.post('/login', async (req, res) => {
 
     // decide whether login input is email, mobile, or username
     let user;
+
     if (isValidEmail(normalizedInput)) {
       user = await User.findOne({ email: normalizedInput.toLowerCase() });
-    } else if (isValidMobile(normalizedMobileInput)) {
-      user = await User.findOne({ mobile: normalizedMobileInput });
+
+    } else if (mobile || /^\d+$/.test(normalizedInput)) {
+      const cleanMobile = normalizeMobile(normalizedInput);
+      user = await User.findOne({ mobile: cleanMobile });
+
     } else {
       user = await User.findOne({ username: normalizedInput.toLowerCase() });
     }
