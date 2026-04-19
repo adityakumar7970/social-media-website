@@ -100,16 +100,14 @@ router.post('/login', async (req, res) => {
 
 router.post('/register', async (req, res) => {
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      mobile,
-      username,
-      password,
-      dateOfBirth,
-      gender,
-    } = req.body;
+    const firstName = req.body.firstName?.trim();
+    const lastName = req.body.lastName?.trim();
+    const email = req.body.email?.trim();
+    const mobile = req.body.mobile?.trim();
+    const username = req.body.username?.trim();
+    const password = req.body.password;
+    const dateOfBirth = req.body.dateOfBirth;
+    const gender = req.body.gender?.trim();
 
     if (
       !firstName ||

@@ -216,7 +216,7 @@ if (signupForm) {
       }
 
       const loginId = email || phone;
-      const { response: loginResponse, result: loginResult } = await performLogin(loginId, password);
+      const { response: loginResponse, data: loginResult } = await performLogin(loginId, password);
 
       if (loginResponse.ok) {
         resetUserSession();
