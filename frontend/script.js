@@ -1,7 +1,5 @@
 ﻿// script.js
-const BACKEND_HOST = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
-  ? 'http://localhost:5000'
-  : window.location.origin;
+const BACKEND_HOST ='https://social-media-website-i6f8.onrender.com';
 const AUTH_API_BASE = `${BACKEND_HOST}/api/auth`;
 const SOCIAL_API_BASE = `${BACKEND_HOST}/api/social`;
 const loginForm = document.getElementById('loginForm');
@@ -245,7 +243,7 @@ if (logoutButton) {
   logoutButton.addEventListener('click', function () {
     resetUserSession();
     sessionStorage.clear();
-    window.location.href = 'Index.html';
+    window.location.href = 'index.html';
   });
 }
 
@@ -448,7 +446,7 @@ async function applyProtectedPage() {
 
   const token = getToken();
   if (!token) {
-    window.location.href = 'Index.html';
+    window.location.href = 'index.html';
     return;
   }
 
@@ -462,7 +460,7 @@ async function applyProtectedPage() {
     if (welcomeMessage) welcomeMessage.textContent = `Welcome back, ${user.fullName}. Your latest stories and posts appear here.`;
   } catch (error) {
     resetUserSession();
-    window.location.href = 'Index.html';
+    window.location.href = 'index.html';
   }
 }
 
@@ -941,7 +939,7 @@ async function initializeProfilePage() {
     await fetchCurrentUser();
   } catch (error) {
     resetUserSession();
-    window.location.href = 'Index.html';
+    window.location.href = 'index.html';
     return;
   }
 

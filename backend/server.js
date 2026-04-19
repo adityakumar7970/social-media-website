@@ -100,7 +100,7 @@ app.get('/api/user/:userId', require('./middleware/auth'), async (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/Index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 mongoose
