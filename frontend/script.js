@@ -1,7 +1,5 @@
 ﻿// script.js
-const BACKEND_HOST = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
-  ? 'http://localhost:5000'
-  : 'https://social-media-website-i6f8.onrender.com';
+const BACKEND_HOST = 'https://social-media-website-i6f8.onrender.com';
 const AUTH_API_BASE = `${BACKEND_HOST}/api/auth`;
 const SOCIAL_API_BASE = `${BACKEND_HOST}/api/social`;
 const TOKEN_KEY = 'token';
