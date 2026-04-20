@@ -131,7 +131,7 @@ if (loginForm) {
     event.preventDefault();
 
     const loginId = document.getElementById('loginId').value.trim();
-    const loginPassword = document.getElementById('loginPassword').value;
+    const loginPassword = document.getElementById('loginPassword').value.trim();
 
     if (!loginId || !loginPassword) {
       alert('Please enter your email/mobile and password.');
@@ -177,7 +177,7 @@ if (signupForm) {
     const email = document.getElementById('signupEmail').value.trim();
     const phone = document.getElementById('signupPhone').value.trim();
     const username = document.getElementById('signupUsername').value.trim();
-    const password = document.getElementById('signupPassword').value;
+    const password = document.getElementById('signupPassword').value.trim();
     const dob = document.getElementById('signupDob').value;
     const gender = document.getElementById('signupGender').value;
 
