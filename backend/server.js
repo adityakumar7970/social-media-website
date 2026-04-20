@@ -17,10 +17,11 @@ const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://singhaditya73128_db_user:fNJKFQCA5TFnq2qF@clusterone.60cqypu.mongodb.net/socialApp';
 
 const corsOptions = {
-  origin: true,
-  credentials: true,
+  origin: '*', // Allow requests from any origin (including mobile)
+  credentials: false, // Cannot use credentials with origin: '*'
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 };
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));

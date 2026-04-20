@@ -24,46 +24,64 @@ router.post('/login', async (req, res) => {
   try {
     const { loginId, email, mobile, password } = req.body;
 
-    //accept anything (loginId OR email OR mobile)
+    // Accept anything (loginId OR email OR mobile)
     const input = loginId || email || mobile;
 
-    if (!input || !password) {
+    // Normalize and trim all inputs
+    const normalizedInput = input?.trim();
+    const normalizedPassword = password?.trim();
+
+    // Debug logging
+    console.log("Login Request:", {
+      input: input?.substring(0, 20) + (input?.length > 20 ? '...' : ''),
+      passwordLength: normalizedPassword?.length,
+      timestamp: new Date().toISOString()
+    });
+
+    if (!normalizedInput || !normalizedPassword) {
       return res.status(400).json({
         success: false,
         message: 'Login ID / Email / Mobile and password are required.'
       });
     }
 
-    const normalizedInput = input.trim();
     const normalizedMobileInput = normalizeMobile(normalizedInput);
 
-    // decide whether login input is email, mobile, or username
+    // Decide whether login input is email, mobile, or username
     let user;
     if (isValidEmail(normalizedInput)) {
+      console.log("Login: Email lookup for:", normalizedInput.toLowerCase());
       user = await User.findOne({ email: normalizedInput.toLowerCase() });
     } else if (isValidMobile(normalizedMobileInput)) {
+      console.log("Login: Mobile lookup for:", normalizedMobileInput);
       user = await User.findOne({ mobile: normalizedMobileInput });
     } else {
+      console.log("Login: Username lookup for:", normalizedInput.toLowerCase());
       user = await User.findOne({ username: normalizedInput.toLowerCase() });
     }
 
-    // user not found
+    // User not found
     if (!user) {
+      console.log("Login: User not found");
       return res.status(401).json({
         success: false,
         message: 'Invalid login credentials.'
       });
     }
 
-    //password check (IMPORTANT)
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Password check (IMPORTANT - use trimmed password)
+    console.log("Login: Comparing passwords, inputLength:", normalizedPassword.length, "storedHashLength:", user.password.length);
+    const isPasswordValid = await bcrypt.compare(normalizedPassword, user.password);
 
     if (!isPasswordValid) {
+      console.log("Login: Password mismatch");
       return res.status(401).json({
         success: false,
         message: 'Invalid login credentials.'
       });
     }
+
+    console.log("Login: Authentication successful for user:", user.username);
 
     //JWT token
     const token = jwt.sign(
@@ -105,9 +123,17 @@ router.post('/register', async (req, res) => {
     const email = req.body.email?.trim();
     const mobile = req.body.mobile?.trim();
     const username = req.body.username?.trim();
-    const password = req.body.password;
+    const password = req.body.password?.trim();
     const dateOfBirth = req.body.dateOfBirth;
     const gender = req.body.gender?.trim();
+
+    console.log("Signup Request:", {
+      email: email?.substring(0, 20) + (email?.length > 20 ? '...' : ''),
+      mobile: mobile?.substring(0, 20) + (mobile?.length > 20 ? '...' : ''),
+      username,
+      passwordLength: password?.length,
+      timestamp: new Date().toISOString()
+    });
 
     if (
       !firstName ||
