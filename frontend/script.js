@@ -1220,7 +1220,7 @@ async function renderHomeFeed() {
             ${renderCommentsHtml(comments)}
           </div>
           <div class="comment-box hide">
-            <input type="text" class="comment-input" placeholder="Add a comment..." />
+            <input type="text" class="comment-input" maxlength="20" placeholder="Add a comment..." />
             <button type="button" class="secondary-button post-comment-button">Post</button>
           </div>
         </div>
@@ -1868,7 +1868,7 @@ async function renderReelsFeed() {
       commentsSection.innerHTML = `
         <div class="comment-list" id="comments-${post.id}">Loading...</div>
         <div class="comment-box">
-          <input type="text" class="comment-input" placeholder="Write a comment..." />
+          <input type="text" class="comment-input" maxlength="20" placeholder="Write a comment..." />
           <button type="button" class="secondary-button post-comment-button">Post</button>
         </div>
       `;
