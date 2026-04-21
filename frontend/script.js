@@ -1554,7 +1554,7 @@ async function initializeHomePage() {
         }
         return;
       }
-      
+
 
       const button = event.target.closest('[data-action], .post-comment-button, .delete-comment-button');
       const card = event.target.closest('.feed-card');
@@ -1636,7 +1636,13 @@ async function initializeHomePage() {
       if (button.classList.contains('post-comment-button')) {
         const input = card.querySelector('.comment-input');
         const text = input ? input.value.trim() : '';
+
         if (!text) {
+          return;
+        }
+
+        if (text.length > 20) {
+          alert("Max 20 characters allowed");
           return;
         }
 
@@ -1825,12 +1831,11 @@ async function renderReelsFeed() {
             <p class="reel-username">${post.author.username}</p>
           </div>
         </div>
-        ${
-          !post.isMine
-            ? `<button type="button" class="reel-follow-button ${post.isFollowingAuthor ? 'following' : ''}" data-action="follow-author" data-user-id="${post.author.userId}">
+        ${!post.isMine
+          ? `<button type="button" class="reel-follow-button ${post.isFollowingAuthor ? 'following' : ''}" data-action="follow-author" data-user-id="${post.author.userId}">
                  ${post.isFollowingAuthor ? 'Following' : 'Follow'}
                </button>`
-            : ''
+          : ''
         }
       `;
 
@@ -1853,12 +1858,11 @@ async function renderReelsFeed() {
           <span class="action-emoji">💬</span>
           <span class="action-count">${post.comments}</span>
         </button>
-        ${
-          post.isMine
-            ? `<button type="button" class="icon-button-vertical delete-post-button" data-action="delete-post" title="Delete" aria-label="Delete post">
+        ${post.isMine
+          ? `<button type="button" class="icon-button-vertical delete-post-button" data-action="delete-post" title="Delete" aria-label="Delete post">
                  <span class="action-emoji">🗑️</span>
                </button>`
-            : ''
+          : ''
         }
       `;
 
@@ -1897,7 +1901,7 @@ async function renderReelsFeed() {
               if (entry.intersectionRatio >= 0.75) {
                 vid.muted = true;
                 const p = vid.play();
-                if (p && p.catch) p.catch(() => {});
+                if (p && p.catch) p.catch(() => { });
               } else {
                 vid.pause();
               }
@@ -2123,7 +2127,7 @@ async function searchUsers(query) {
 
   try {
     const { response, data } = await apiGet(`${SOCIAL_API_BASE}/search?query=${encodeURIComponent(query)}`);
-    
+
     if (response.ok && data.users) {
       renderSearchResults(data.users);
     } else {
@@ -2147,10 +2151,10 @@ function renderSearchResults(users) {
   resultsContainer.innerHTML = users.map(user => `
     <div class="user-result-item" data-user-id="${user.userId}">
       <div class="user-avatar">
-        ${user.avatar 
-          ? `<img src="${user.avatar}" alt="${user.username} avatar">` 
-          : `<span class="user-avatar-placeholder">${user.username.charAt(0).toUpperCase()}</span>`
-        }
+        ${user.avatar
+      ? `<img src="${user.avatar}" alt="${user.username} avatar">`
+      : `<span class="user-avatar-placeholder">${user.username.charAt(0).toUpperCase()}</span>`
+    }
       </div>
       <div class="user-info">
         <span class="user-username">@${user.username}</span>
@@ -2162,7 +2166,7 @@ function renderSearchResults(users) {
 
   // Add click listeners to search results
   document.querySelectorAll('.user-result-item').forEach(item => {
-    item.addEventListener('click', function() {
+    item.addEventListener('click', function () {
       const userId = this.dataset.userId;
       window.location.href = `user.html?userId=${encodeURIComponent(userId)}`;
     });
@@ -2176,7 +2180,7 @@ function initializeSearch() {
 
   // Handle input with debounce
   let searchTimeout;
-  searchInput.addEventListener('input', function() {
+  searchInput.addEventListener('input', function () {
     clearTimeout(searchTimeout);
     const query = this.value.trim();
 
@@ -2193,7 +2197,7 @@ function initializeSearch() {
 
   // Clear button handler
   if (searchClearBtn) {
-    searchClearBtn.addEventListener('click', function() {
+    searchClearBtn.addEventListener('click', function () {
       searchInput.value = '';
       searchInput.focus();
       this.style.display = 'none';
