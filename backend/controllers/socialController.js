@@ -169,12 +169,13 @@ async function buildPostPayload(posts, currentUserId, followedIds = []) {
 
 async function getPosts(req, res) {
   try {
-    const posts = await Post.find()
-      .sort({ createdAt: -1 })
-      .populate('userId', 'username avatar');
-
     const followRecords = await Follow.find({ followerId: req.user.userId }).select('followingId');
     const followedIds = followRecords.map((record) => record.followingId);
+    const authorIds = [req.user.userId, ...followedIds];
+
+    const posts = await Post.find({ userId: { $in: authorIds } })
+      .sort({ createdAt: -1 })
+      .populate('userId', 'username avatar');
 
     const payload = await buildPostPayload(posts, req.user.userId, followedIds);
     return res.json({ success: true, posts: payload });
@@ -226,14 +227,15 @@ async function getUserPosts(req, res) {
 
 async function getReels(req, res) {
   try {
-    const posts = await Post.find()
+    const followRecords = await Follow.find({ followerId: req.user.userId }).select('followingId');
+    const followedIds = followRecords.map((record) => record.followingId);
+    const authorIds = [req.user.userId, ...followedIds];
+
+    const posts = await Post.find({ userId: { $in: authorIds } })
       .sort({ createdAt: -1 })
       .populate('userId', 'username avatar');
 
-    const followRecords = await Follow.find({ followerId: req.user.userId }).select('followingId');
-    const followedIds = followRecords.map((record) => record.followingId);
     const payload = await buildPostPayload(posts, req.user.userId, followedIds);
-
     return res.json({ success: true, posts: payload });
   } catch (error) {
     console.error('Reels fetch error:', error);
