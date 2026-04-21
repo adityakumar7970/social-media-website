@@ -1883,6 +1883,39 @@ async function renderReelsFeed() {
       reelsFeed.appendChild(card);
       loadReelComments(post.id);
     });
+
+    // Autoplay visible reel videos and pause others using IntersectionObserver
+    (function setupReelsAutoplay() {
+      try {
+        const videos = reelsFeed.querySelectorAll('video');
+        if (!videos || videos.length === 0) return;
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              const vid = entry.target;
+              if (entry.intersectionRatio >= 0.75) {
+                vid.muted = true;
+                const p = vid.play();
+                if (p && p.catch) p.catch(() => {});
+              } else {
+                vid.pause();
+              }
+            });
+          },
+          { threshold: [0.75] }
+        );
+
+        videos.forEach((v) => observer.observe(v));
+
+        // Pause all videos on navigation away
+        window.addEventListener('pagehide', function () {
+          videos.forEach((v) => v.pause());
+        });
+      } catch (e) {
+        console.error('Reels autoplay setup error:', e);
+      }
+    })();
   } catch (error) {
     console.error('Reels render error:', error);
     reelsFeed.innerHTML = `
