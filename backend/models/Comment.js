@@ -16,6 +16,7 @@ const commentSchema = new mongoose.Schema(
     },
     text: {
       type: String,
+      maxlength: 20,
       required: true,
       trim: true,
     },
